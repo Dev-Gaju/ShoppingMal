@@ -76,12 +76,13 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Add Category</h5>
+                        <h5 class="modal-title text-center" v-show="!editMode" id="exampleModalLongTitle">Add Category</h5>
+                        <h5 class="modal-title  text-center " v-show="editMode" id="exampleModalLongTitle">Category Info</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form @submit.prevent="createCategory">
+                    <form @submit.prevent="editMode ? UpdateCategory() : createCategory()">
                     <div class="modal-body">
                             <div class="form-group">
                             <input v-model="form.category_name" id="category_name" type="text" name="category_name"
@@ -107,7 +108,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="close-modal1" class="btn btn-danger" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" >Save changes</button>
+                    <button type="submit" v-show="!editMode" class="btn btn-primary" >Save Category</button>
+                    <button type="submit" v-show="editMode" class="btn btn-primary" >Update Category</button>
                 </div>
                     </form>
 
@@ -124,8 +126,10 @@
 
         data(){
             return{
+                editMode:false,
                 categories:[],
                 form: new Form({
+                    'id':'',
                   'category_name':'',
                     'category_description':'',
                     'publication_status':''
@@ -136,18 +140,34 @@
 
 
         methods:{
-            createNew(){
-                this.form.reset();
-                $('#addNew').modal('show');
+            UpdateCategory(){
+               // console.log(id);
+
+                this.form.put('category-update/'+this.form.id).
+                then(()=>{
+                    // success
+                    axios.get('category-show').then(response => {  this.categories = response.data});
+                    document.getElementById('close-modal1').click();
+                swal("Update", "Category Updated!", "success");
+
+                }).
+               catch(()=>{
+                   //If Crash
+
+               })
             },
+
             editCategory(category){
-                console.log(category)
+                this.editMode=true;
                 this.form.reset();
                 $('#addNew').modal('show');
                 this.form.fill (category);
             },
-
-
+            createNew(){
+                this.editMode=false;
+                this.form.reset();
+                $('#addNew').modal('show');
+            },
 
             categoryDelete(id){
                 swal({

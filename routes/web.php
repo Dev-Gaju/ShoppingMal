@@ -16,4 +16,5 @@ Route::get('{path}','HomeController@index')->where( 'path', '([A-z]+)?' );
 
 Route::resource('category','CategoryController');
 Route::get('category-show','CategoryController@index');
+Route::put('category-update/{id}','CategoryController@update');
 

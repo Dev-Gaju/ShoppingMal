@@ -53128,13 +53128,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            editMode: false,
             categories: [],
             form: new Form({
+                'id': '',
                 'category_name': '',
                 'category_description': '',
                 'publication_status': ''
@@ -53145,18 +53149,36 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
     methods: {
-        createNew: function createNew() {
-            this.form.reset();
-            $('#addNew').modal('show');
+        UpdateCategory: function UpdateCategory() {
+            var _this = this;
+
+            // console.log(id);
+
+            this.form.put('category-update/' + this.form.id).then(function () {
+                // success
+                axios.get('category-show').then(function (response) {
+                    _this.categories = response.data;
+                });
+                document.getElementById('close-modal1').click();
+                swal("Update", "Category Updated!", "success");
+            }).catch(function () {
+                //If Crash
+
+            });
         },
         editCategory: function editCategory(category) {
-            console.log(category);
+            this.editMode = true;
             this.form.reset();
             $('#addNew').modal('show');
             this.form.fill(category);
         },
+        createNew: function createNew() {
+            this.editMode = false;
+            this.form.reset();
+            $('#addNew').modal('show');
+        },
         categoryDelete: function categoryDelete(id) {
-            var _this = this;
+            var _this2 = this;
 
             swal({
                 title: "Are you sure?",
@@ -53166,12 +53188,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 dangerMode: true
             }).then(function (result) {
                 if (result) {
-                    _this.form.delete('category/' + id).then(function () {
+                    _this2.form.delete('category/' + id).then(function () {
                         swal("Poof! Category has been deleted!", {
                             icon: "success"
                         });
                         axios.get('category-show').then(function (response) {
-                            _this.categories = response.data;
+                            _this2.categories = response.data;
                         });
                     }).catch(function () {
 
@@ -53181,22 +53203,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         loadCategory: function loadCategory() {
-            var _this2 = this;
+            var _this3 = this;
 
             axios.get('category-show').then(function (response) {
-                _this2.categories = response.data;
+                _this3.categories = response.data;
             });
         },
         createCategory: function createCategory() {
-            var _this3 = this;
+            var _this4 = this;
 
             this.form.post('category').then(function () {
                 axios.get('category-show').then(function (response) {
-                    _this3.categories = response.data;
+                    _this4.categories = response.data;
                 });
                 document.getElementById('close-modal1').click();
                 swal("Good job!", "Category saved!", "success");
-                _this3.form.reset();
+                _this4.form.reset();
             }).catch(function () {});
         }
     },
@@ -53362,7 +53384,43 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(4),
+              _c("div", { staticClass: "modal-header" }, [
+                _c(
+                  "h5",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: !_vm.editMode,
+                        expression: "!editMode"
+                      }
+                    ],
+                    staticClass: "modal-title text-center",
+                    attrs: { id: "exampleModalLongTitle" }
+                  },
+                  [_vm._v("Add Category")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "h5",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.editMode,
+                        expression: "editMode"
+                      }
+                    ],
+                    staticClass: "modal-title  text-center ",
+                    attrs: { id: "exampleModalLongTitle" }
+                  },
+                  [_vm._v("Category Info")]
+                ),
+                _vm._v(" "),
+                _vm._m(4)
+              ]),
               _vm._v(" "),
               _c(
                 "form",
@@ -53370,7 +53428,7 @@ var render = function() {
                   on: {
                     submit: function($event) {
                       $event.preventDefault()
-                      return _vm.createCategory($event)
+                      _vm.editMode ? _vm.UpdateCategory() : _vm.createCategory()
                     }
                   }
                 },
@@ -53539,7 +53597,54 @@ var render = function() {
                     )
                   ]),
                   _vm._v(" "),
-                  _vm._m(5)
+                  _c("div", { staticClass: "modal-footer" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-danger",
+                        attrs: {
+                          type: "button",
+                          id: "close-modal1",
+                          "data-dismiss": "modal"
+                        }
+                      },
+                      [_vm._v("Close")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: !_vm.editMode,
+                            expression: "!editMode"
+                          }
+                        ],
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Save Category")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.editMode,
+                            expression: "editMode"
+                          }
+                        ],
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Update Category")]
+                    )
+                  ])
                 ]
               )
             ])
@@ -53697,47 +53802,18 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-header" }, [
-      _c(
-        "h5",
-        { staticClass: "modal-title", attrs: { id: "exampleModalLongTitle" } },
-        [_vm._v("Add Category")]
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "close",
-          attrs: {
-            type: "button",
-            "data-dismiss": "modal",
-            "aria-label": "Close"
-          }
-        },
-        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-footer" }, [
-      _c(
-        "button",
-        {
-          staticClass: "btn btn-danger",
-          attrs: { type: "button", id: "close-modal1", "data-dismiss": "modal" }
-        },
-        [_vm._v("Close")]
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        { staticClass: "btn btn-primary", attrs: { type: "submit" } },
-        [_vm._v("Save changes")]
-      )
-    ])
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
   }
 ]
 render._withStripped = true
