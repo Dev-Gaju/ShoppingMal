@@ -1,4 +1,3 @@
-
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -13,27 +12,43 @@ window.Vue = require('vue');
 // CommonJS
 
 import swal from 'sweetalert';
-window.swal=swal;
+window.swal = swal;
 
- /** Vform use to save data*/
+window.Fire = new Vue();
 
-import { Form, HasError, AlertError } from 'vform'
-window.Form= Form;
+/** Vform use to save data*/
+
+import {
+    Form,
+    HasError,
+    AlertError
+} from 'vform'
+window.Form = Form;
 Vue.component(HasError.name, HasError)
 Vue.component(AlertError.name, AlertError)
 
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
-const routes = [
-    { path: '/category', component: require('./components/CategoryComponent.vue')},
-    { path: '/brand', component: require('./components/BrandComponent.vue')}
+const routes = [{
+        path: '/category',
+        component: require('./components/CategoryComponent.vue')
+    },
+    {
+        path: '/brand',
+        component: require('./components/BrandComponent.vue')
+    },
+    {
+        path: '/product',
+        component: require('./components/ProductComponent.vue')
+    }
 ];
 
-const router=new VueRouter({
+const router = new VueRouter({
     mode: 'history',
     routes
 })
+
 
 
 

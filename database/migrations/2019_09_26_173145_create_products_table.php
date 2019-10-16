@@ -26,13 +26,12 @@ class CreateProductsTable extends Migration
             $table->tinyInteger('publication_status');
             $table->timestamps();
 
-            $table->foreign('category_id')->references('id')->on('categories')->
-            onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('category_id')->references('id')->on('categories')->onUpdate('cascade')->onDelete('cascade');
 
-           // $table->foreign('category_id')->references('id')->on('categories')->
-               // onUpdate('cascade')->onDelete('cascade');
-           // $table->foreign('brand_id')->references('id')->on('brands')->
-           // onUpdate('cascade');
+            // $table->foreign('category_id')->references('id')->on('categories')->
+            // onUpdate('cascade')->onDelete('cascade');
+            // $table->foreign('brand_id')->references('id')->on('brands')->
+            // onUpdate('cascade');
 
 
         });

@@ -13,15 +13,12 @@ class SubImageTable extends Migration
      */
     public function up()
     {
-        Schema::create('sub_image',function (Blueprint $table){
-              $table->Increments('id');
-              $table->unsignedInteger('product_id');
-              $table->text('sub_image');
-              $table->timestamps();
-              $table->foreign('product_id')->references('id')->on('products')->
-              onUpdate('cascade')->onDelete('cascade');
-
-
+        Schema::create('sub_image', function (Blueprint $table) {
+            $table->Increments('id');
+            $table->unsignedInteger('product_id');
+            $table->text('sub_image');
+            $table->timestamps();
+            $table->foreign('product_id')->references('id')->on('products')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

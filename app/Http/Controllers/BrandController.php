@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Brand;
 use Illuminate\Http\Request;
 
 class BrandController extends Controller
@@ -13,7 +14,9 @@ class BrandController extends Controller
      */
     public function index()
     {
-        //
+        $brands = Brand::orderBy('id', 'desc')->get();
+        $brands = json_encode($brands);
+        return $brands;
     }
 
     /**
@@ -34,7 +37,19 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'brand_name' => 'required|string',
+            'brand_description' => 'required|string',
+            'publication_status' => 'required',
+
+        ]);
+        return Brand::create([
+
+            'brand_name' => $request['brand_name'],
+            'brand_description' => $request['brand_description'],
+            'publication_status' => $request['publication_status']
+
+        ]);
     }
 
     /**
@@ -68,7 +83,9 @@ class BrandController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $brand = Brand::find($id);
+        $brand->update($request->all());
+        return ["message" => "edited Successfully"];
     }
 
     /**
@@ -79,6 +96,22 @@ class BrandController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $brands = Brand::find($id);
+        $brands->delete();
+        return ['message' => 'delete brand Succesfully'];
+    }
+
+    public function Search()
+    {
+        $search = \Request::get('q');
+
+        $brands = Brand::where('brand_name', 'LIKE', '%' . $search . '%')->orwhere(
+            'brand_description',
+            'LIKE',
+            '%' . $search . '%'
+        )->paginate(20);
+
+        $brands = json_encode($brands);
+        return $brands;
     }
 }
