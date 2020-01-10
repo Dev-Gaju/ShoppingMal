@@ -14,8 +14,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories=Category::orderBy('id','desc')->get();
-        $categories=json_encode($categories);
+        $categories = Category::orderBy('id', 'desc')->get();
+        $categories = json_encode($categories);
         return $categories;
     }
 
@@ -25,9 +25,7 @@ class CategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
-
-    }
+    { }
 
     /**
      * Store a newly created resource in storage.
@@ -37,15 +35,16 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
-             'category_name' => 'required|string',
-             'category_description' => 'required',
-             'publication_status' => 'required',
+
+        $this->validate($request, [
+            'category_name' => 'required|string',
+            'category_description' => 'required',
+            'publication_status' => 'required',
         ]);
         return Category::create([
-            'category_name'=>$request['category_name'],
-            'category_description'=>$request['category_description'],
-            'publication_status'=>$request['publication_status'],
+            'category_name' => $request['category_name'],
+            'category_description' => $request['category_description'],
+            'publication_status' => $request['publication_status'],
         ]);
     }
 
@@ -67,9 +66,7 @@ class CategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {
-
-    }
+    { }
 
     /**
      * Update the specified resource in storage.
@@ -80,10 +77,10 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $category= Category::find($id);
+        $category = Category::find($id);
         $category->update($request->all());
 
-        return ['message'=>'update Category Info'];
+        return ['message' => 'update Category Info'];
     }
 
     /**
@@ -94,9 +91,8 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $category=Category::findOrFail($id);
+        $category = Category::findOrFail($id);
         $category->delete();
         return ['message' => 'Category Deleted'];
     }
 }
-

@@ -239,9 +239,6 @@ export default {
         })
         .catch(() => {});
     },
-    SearchHit() {
-      Fire.$emit("searching");
-    },
 
     loadBrands() {
       axios.get("brands-show").then(response => {
@@ -298,6 +295,9 @@ export default {
             });
         }
       });
+    },
+    SearchHit() {
+      Fire.$emit("searching");
     }
   },
 

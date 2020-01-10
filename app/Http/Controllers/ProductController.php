@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use App\Product;
 use App\Category;
 use App\Brand;
+use Image;
 use App\Sub_image;
+use Response;
+
 
 class ProductController extends Controller
 {
@@ -20,9 +23,11 @@ class ProductController extends Controller
         $information = json_encode($data);
         return $information;
     }
-    public function saveProduct(Request $request)
 
+    public function saveProduct(Request $request)
     {
+
+
         $this->validate($request, [
             'product_name' => 'required|string',
             'product_price' => 'required|string:255',
@@ -33,36 +38,71 @@ class ProductController extends Controller
             'brand_id' => 'required',
             'category_id' => 'required',
             'product_image' => 'required',
-            'sub_image' => 'required'
-
+           'sub_image' => 'required'
 
         ]);
 
-        $exoloded = explode(',', $request->product_image);
-        $decode = base64_decode($exoloded[1]);
-        if (str_contains($exoloded[0], 'jpeg'))
-
-            $extension = 'jpg';
-        else
-            $extension = 'png';
-        $fileName = str_random() . '.' . $extension;
-        $path = ('images/') . '/' . $fileName;
-        file_put_contents($path, $decode);
 
 
-        $product = Product::create([
-            'product_name' => $request['product_name'],
-            'product_price' => $request['product_price'],
-            'product_quantity' => $request['product_quantity'],
-            'short_description' => $request['short_description'],
-            'full_description' => $request['full_description'],
-            'publication_status' => $request['publication_status'],
-            'brand_id' => $request['brand_id'],
-            'category_id' => $request['category_id'],
-            'product_image' => $path,
-        ]);
-        $product->save();
+
+
+            //single image
+            $strpos=strpos($request->product_image, ';'); //Find the path in substring of a string
+            $substr= substr($request->product_image,0, $strpos); //return part of string
+            $ex=explode('/', $substr)[1]; //split a string by string
+            $name=time().".".$ex; //image name with date
+            $image=Image::make($request->product_image)->resize(200,200); //upload and resize
+            $public_path=public_path()."/product_image/"; //select the path where you want store
+            $imageUrl="/product_image/".$name; //for database store
+            $image->save($public_path.$name); //save in folder
+
+            //data save
+            $product= Product::create([
+                'product_name' => $request['product_name'],
+                'product_price' => $request['product_price'],
+                'product_quantity' => $request['product_quantity'],
+                'short_description' => $request['short_description'],
+                'full_description' => $request['full_description'],
+                'publication_status' => $request['publication_status'],
+                'brand_id' => $request['brand_id'],
+                'category_id' => $request['category_id'],
+                 'product_image' => $imageUrl
+            ]);
+
+            $productid=$product->id;
+
+
+         //multiple image saved
+           $multipleImages=$request['sub_image']; //count($multipleImages)
+           foreach($multipleImages as $multipleImage){
+           $strpos=strpos($multipleImage, ';'); //Find the path in substring of a string
+           $substr= substr($multipleImage,0, $strpos); //return part of string
+           $ex=explode('/', $substr)[1]; //split a string by string
+           $name=rand(1,1000).".".$ex; //image name with date
+           $image=Image::make($multipleImage); //upload and resize
+           $public_path=public_path()."/sub-Image/"; //select the path where you want store
+           $isubmageUrl="/sub-Image/".$name; //for database store
+           $image->save($public_path.$name); //save in folder
+           $subImage=Sub_image::create([
+            'product_id' => $productid,
+            'sub_image'=> $isubmageUrl
+          ]);
+
+        }
+
+
+
+
+
+            return Response::json(array(
+                'product'=> $product,
+                'subImage'=>$subImage
+
+            ));
+
     }
+
+
 
     public function showProduct()
     {

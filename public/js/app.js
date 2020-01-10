@@ -54225,9 +54225,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         _this.form.reset();
       }).catch(function () {});
     },
-    SearchHit: function SearchHit() {
-      Fire.$emit("searching");
-    },
     loadBrands: function loadBrands() {
       var _this2 = this;
 
@@ -54280,6 +54277,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           });
         }
       });
+    },
+    SearchHit: function SearchHit() {
+      Fire.$emit("searching");
     }
   },
 
@@ -55296,6 +55296,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -55323,7 +55326,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     imageUpload: function imageUpload(e) {
       var _this = this;
 
-      console.log(e.target.files[0]);
+      //   console.log(e.target.files[0]);
       var fileReader = new FileReader();
       fileReader.readAsDataURL(e.target.files[0]);
       fileReader.onload = function (e) {
@@ -55332,14 +55335,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       console.log(this.form);
     },
     SubimageUpload: function SubimageUpload(e) {
-      var seletedFiles = e.target.files;
-      if (!seletedFiles.length) {
-        return false;
+      var _this2 = this;
+
+      var _loop = function _loop(i) {
+        fileReader = new FileReader();
+
+        fileReader.readAsDataURL(e.target.files[i]);
+        fileReader.onload = function (e) {
+          _this2.form.sub_image[i] = e.target.result;
+        };
+      };
+
+      for (var i = e.target.files.length - 1; i >= 0; i--) {
+        var fileReader;
+
+        _loop(i);
       }
-      for (var i = 0; i < seletedFiles.length; i++) {
-        this.form.sub_image.push(seletedFiles[i]);
-      }
-      console.log(this.form.sub_image);
+      console.log(this.form);
     },
     createNew: function createNew() {
       $("#addNew").modal("show");
@@ -55347,21 +55359,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.editMode = false;
     },
     SaveProduct: function SaveProduct() {
-      var _this2 = this;
+      var _this3 = this;
 
+      console.log(this.form);
       this.form.post("product").then(function () {
         axios.get("product-show").then(function (response) {
-          _this2.products = response.data;
+          _this3.products = response.data;
         });
         swal("Good Job", "Product Saved", "success");
         document.getElementById("close-modall").click();
       }).catch(function () {});
     },
     loadProducts: function loadProducts() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get("product-show").then(function (response) {
-        _this3.products = response.data;
+        _this4.products = response.data;
       });
     },
     editproductInfo: function editproductInfo(products) {
@@ -55371,18 +55384,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.form.fill(products);
     },
     UpdateProduct: function UpdateProduct() {
-      var _this4 = this;
+      var _this5 = this;
 
       this.form.put("updateProduct/" + this.form.id).then(function () {
         swal("Update", "Product Updated", "success");
         axios.get("product-show").then(function (response) {
-          _this4.products = response.data;
+          _this5.products = response.data;
         });
         document.getElementById("close-modall").click();
       }).catch(function () {});
     },
     DeleteProduct: function DeleteProduct(id) {
-      var _this5 = this;
+      var _this6 = this;
 
       swal({
         title: "Are you sure?",
@@ -55392,12 +55405,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         dangerMode: true
       }).then(function (result) {
         if (result) {
-          _this5.form.delete("delete/" + id).then(function () {
+          _this6.form.delete("delete/" + id).then(function () {
             swal("Poof! Your imaginary file has been deleted!", {
               icon: "success"
             });
             axios.get("product-show").then(function (response) {
-              _this5.products = response.data;
+              _this6.products = response.data;
             });
           }).catch(function () {
             swal("Your imaginary file is safe!");
@@ -55406,14 +55419,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       });
     },
     loadData: function loadData() {
-      var _this6 = this;
+      var _this7 = this;
 
       axios.get("data-sent").then(function (response) {
-        _this6.information = response.data;
+        _this7.information = response.data;
       });
     }
   },
-
   created: function created() {
     this.loadData();
     this.loadProducts();

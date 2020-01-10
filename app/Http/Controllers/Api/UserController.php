@@ -18,6 +18,7 @@ class UserController extends Controller
     {
         $user = User::orderBy('id', 'desc')->get();
         $user = json_encode($user);
+        // $user = response()->json($user);
         return $user;
     }
 

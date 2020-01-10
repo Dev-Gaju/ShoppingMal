@@ -6,7 +6,7 @@
         <div class="card-header">
           <h3 class="text-center">Product Information</h3>
         </div>
-        <!-- /.card-header -->
+
         <div class="card-body">
           <div id="example1_wrapper" class="dataTables_wrapper dt-bootstrap4">
             <div class="row">
@@ -134,7 +134,7 @@
                   </thead>
                   <tbody>
                     <tr v-for="product in products" role="row" class="odd">
-                      <td class="sorting_1">{{product[0].product_name}}</td>
+                      <td class="sorting_1">{{ product[0].product_name}}</td>
                       <td>{{product[0].category.category_name}}</td>
                       <td>{{product[0].brand.brand_name}}</td>
                       <td>{{product[0].product_quantity}}</td>
@@ -289,6 +289,7 @@
               <div class="form-group">
                 <input type="file" accept="image/*" class="form-control" @change="imageUpload" />
               </div>
+
               <div class="form-group">
                 <input
                   type="file"
@@ -298,6 +299,8 @@
                   @change="SubimageUpload"
                 />
               </div>
+
+
               <div class="form-group">
                 <select
                   v-model="form.publication_status"
@@ -355,7 +358,7 @@ export default {
   },
   methods: {
     imageUpload(e) {
-      console.log(e.target.files[0]);
+      //   console.log(e.target.files[0]);
       var fileReader = new FileReader();
       fileReader.readAsDataURL(e.target.files[0]);
       fileReader.onload = e => {
@@ -363,22 +366,30 @@ export default {
       };
       console.log(this.form);
     },
+
+
     SubimageUpload(e) {
-      let seletedFiles = e.target.files;
-      if (!seletedFiles.length) {
-        return false;
+      for (let i= e.target.files.length-1; i>=0; i--) {
+      var fileReader = new FileReader();
+       fileReader.readAsDataURL(e.target.files[i]);
+        fileReader.onload = e => {
+        this.form.sub_image[i] = e.target.result;
+      };
+
       }
-      for (let i = 0; i < seletedFiles.length; i++) {
-        this.form.sub_image.push(seletedFiles[i]);
-      }
-      console.log(this.form.sub_image);
-    },
+      console.log(this.form);
+      },
+
+
+
+
     createNew() {
       $("#addNew").modal("show");
       this.form.reset();
       this.editMode = false;
     },
-    SaveProduct() {
+
+    SaveProduct() { console.log(this.form)
       this.form
         .post("product")
         .then(() => {
@@ -390,11 +401,15 @@ export default {
         })
         .catch(() => {});
     },
+
+
     loadProducts() {
       axios.get("product-show").then(response => {
         this.products = response.data;
       });
     },
+
+
     editproductInfo(products) {
       this.form.reset();
       $("#addNew").modal("show");
@@ -413,7 +428,6 @@ export default {
         })
         .catch(() => {});
     },
-
     DeleteProduct(id) {
       swal({
         title: "Are you sure?",
@@ -446,7 +460,6 @@ export default {
       });
     }
   },
-
   created() {
     this.loadData();
     this.loadProducts();
