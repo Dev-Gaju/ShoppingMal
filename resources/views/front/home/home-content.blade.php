@@ -11,7 +11,7 @@
                        <div class="col-md-6 col-md-offset-3 col-md-pull-2 col-sm-12 col-xs-12 slider-text">
                            <div class="slider-text-inner">
                                <div class="desc">
-                                   <h1 class="head-1">Men's</h1>
+                                   <h1 class="head-1">Men/h1>
                                    <h2 class="head-2">Jeans</h2>
                                    <h2 class="head-3">Collection</h2>
                                    <p class="category"><span>New stylish shirts, pants &amp; Accessories</span></p>

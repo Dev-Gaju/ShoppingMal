@@ -89,11 +89,6 @@ class ProductController extends Controller
           ]);
 
         }
-
-
-
-
-
             return Response::json(array(
                 'product'=> $product,
                 'subImage'=>$subImage

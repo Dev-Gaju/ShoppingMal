@@ -2,9 +2,22 @@
 
 
 Route::get('/', 'WelcomeController@index');
+Route::get('/blogs', 'WelcomeController@blogs');
+Route::get('/contacts', 'WelcomeController@contact');
+Route::get('/shops', 'WelcomeController@shoppingitem');
+Route::get('/product-details','WelcomeCOntroller@productDetail');
+Route::get('/checkout', 'WelcomeController@checkouts');
+Route::get('/wishlist','WelcomeController@wishlist');
 
+
+/**Cart COntroller */
+Route::get('/addTocart','CartController@index');
 Auth::routes();
+
 Route::get('/home', 'HomeController@index')->name('home');
+
+
+
 
 
 
@@ -17,8 +30,6 @@ Route::get('{path}', 'HomeController@index')->where('path', '([A-z]+)?');
 Route::resource('category', 'CategoryController');
 Route::get('category-show', 'CategoryController@index');
 Route::put('category-update/{id}', 'CategoryController@update');
-
-
 
 
 //  brand Routes
